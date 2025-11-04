@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMap - خريطة الرياضيات التفاعلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f1724;
+            --bg-light: #1e293b;
+            --bg-lighter: #334155;
+            --text: #ffffff;
+            --muted: #94a3b8;
+            --blue: #2563EB;
+            --blue-light: #3b82f6;
+            --orange: #FB923C;
+            --green: #10B981;
+            --purple: #7C3AED;
+            --red: #EF4444;
+            --yellow: #FBBF24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg) 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--blue-light);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--blue), var(--purple), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(37, 99, 235, 0.5); }
+            to { text-shadow: 0 0 20px rgba(124, 58, 237, 0.5); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+            color: white;
+            padding: 14px 35px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--blue);
+            color: var(--blue);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--blue);
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            color: var(--text);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        /* Map Container */
+        .map-section {
+            padding: 2rem 0;
+            background: var(--bg-light);
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .map-title {
+            font-size: 2.2rem;
+            color: var(--text);
+        }
+
+        .map-container {
+            height: 700px;
+            background: var(--bg);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #math-map {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #math-map:active {
+            cursor: grabbing;
+        }
+
+        /* Controls */
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            padding: 1.2rem;
+            border-radius: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group h3 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            color: var(--muted);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .control-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Cairo';
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-btn:hover {
+            background: var(--blue-light);
+            transform: translateY(-2px);
+        }
+
+        .control-btn i {
+            font-size: 0.9rem;
+        }
+
+        #search {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo';
+            width: 100%;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #search:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        /* Node Styles */
+        .node {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .node circle {
+            stroke: white;
+            stroke-width: 2;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .node-algebra circle { fill: var(--blue); }
+        .node-geometry circle { fill: var(--green); }
+        .node-calculus circle { fill: var(--orange); }
+        .node-statistics circle { fill: var(--purple); }
+        .node-arithmetic circle { fill: var(--red); }
+        .node-trigonometry circle { fill: var(--yellow); }
+
+        .node text {
+            font-weight: 700;
+            font-size: 14px;
+            fill: white;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+
+        .link {
+            stroke: var(--muted);
+            stroke-width: 2;
+            stroke-opacity: 0.6;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--muted);
+            transition: color 0.3s;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close:hover {
+            color: var(--red);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-category {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .modal-description {
+            color: var(--text);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-example {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-right: 4px solid var(--blue);
+        }
+
+        .modal-example h4 {
+            color: var(--blue);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .modal-example p {
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 0.8rem;
+            border-radius: 6px;
+            direction: ltr;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Topic Page */
+        .topic-header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg) 100%);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--blue-light);
+        }
+
+        .content-section {
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--blue);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(37, 99, 235, 0.3);
+        }
+
+        .example-box {
+            background: rgba(255,255,255,0.05);
+            padding: 1.8rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border-right: 4px solid var(--blue);
+            transition: transform 0.3s;
+        }
+
+        .example-box:hover {
+            transform: translateX(-5px);
+        }
+
+        .example-box h3 {
+            color: var(--green);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .math-formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-size: 1.2rem;
+            direction: ltr;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-light);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-info {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .footer-heading {
+            color: var(--text);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .footer-heading::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--blue);
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: var(--blue);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .map-controls {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+
+            .map-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Math Elements */
+        .math-badge {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--blue);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 5px 5px 0;
+        }
+
+        .concept-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .concept-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .concept-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--blue);
+            transform: translateY(-3px);
+        }
+
+        /* Animation for nodes */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .node.pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- الصفحة الرئيسية -->
+    <div id="home-page">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-project-diagram"></i>
+                        MathMap
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" class="active" onclick="showPage('home-page')">الرئيسية</a></li>
+                            <li><a href="#" onclick="showPage('map-page')">الخريطة</a></li>
+                            <li><a href="#" onclick="showPage('about-page')">عن المشروع</a></li>
+                            <li><a href="#" onclick="showPage('learn-page')">كيف أتعلم</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>خريطة الرياضيات التفاعلية</h1>
+                    <p>استكشف عالم الرياضيات من خلال خريطة تفاعلية ذكية تربط بين جميع المفاهيم والمواضيع الرياضية بطريقة مرئية وسهلة الفهم. ابدأ رحلتك في عالم الأرقام والمعادلات!</p>
+                    <button class="btn" onclick="showPage('map-page')">
+                        <i class="fas fa-play"></i>
+                        ابدأ الرحلة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">مميزات MathMap</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <h3>خريطة تفاعلية ذكية</h3>
+                        <p>استكشف مواضيع الرياضيات من خلال خريطة مرئية متطورة تربط بين المفاهيم المختلفة وتظهر العلاقات بينها</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>شرح مبسط وشامل</h3>
+                        <p>شرح مفصل مع أمثلة عملية وتمارين تفاعلية لكل موضوع في الرياضيات بمختلف مستويات الصعوبة</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>تصميم متجاوب</h3>
+                        <p>يعمل على جميع الأجهزة من الهواتف إلى أجهزة الكمبيوتر بتجربة مستخدم سلسة وأنيقة</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div>
+                        <div class="footer-logo">MathMap</div>
+                        <p class="footer-info">منصة تعليمية تفاعلية تهدف إلى تبسيط تعلم الرياضيات من خلال الخرائط الذهنية والشرح المبسط.</p>
+                    </div>
+                    <div>
+                        <h3 class="footer-heading">روابط سريعة</h3>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="showPage('home-page')"><i class="fas fa-home"></i> الرئيسية</a></li>
+                            <li><a href="#" onclick="showPage('map-page')"><i class="fas fa-map"></i> الخريطة التفاعلية</a></li>
+                            <li><a href="#" onclick="showPage('about-page')"><i class="fas fa-info-circle"></i> عن المشروع</a></li>
+                            <li><a href="#" onclick="showPage('learn-page')"><i class="fas fa-book"></i> كيف أتعلم</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="footer-heading">معلومات المشروع</h3>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fas fa-user-graduate"></i> الطالب: باسل خالد إبراهيم المريشد</a></li>
+                            <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> المعلم: محمد حامد</a></li>
+                            <li><a href="#"><i class="fas fa-school"></i> المدرسة: المطورون</a></li>
+                            <li><a href="#"><i class="fas fa-book"></i> المادة: الرياضيات</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>MathMap &copy; 2024 - مشروع الطالب: باسل خالد إبراهيم المريشد | المعلم: محمد حامد | مدرسة المطورون</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- صفحة الخريطة -->
+    <div id="map-page" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-project-diagram"></i>
+                        MathMap
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" onclick="showPage('home-page')">الرئيسية</a></li>
+                            <li><a href="#" class="active" onclick="showPage('map-page')">الخريطة</a></li>
+                            <li><a href="#" onclick="showPage('about-page')">عن المشروع</a></li>
+                            <li><a href="#" onclick="showPage('learn-page')">كيف أتعلم</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section class="map-section">
+            <div class="container">
+                <div class="map-header">
+                    <h2 class="map-title">خريطة الرياضيات التفاعلية</h2>
+                    <div>
+                        <button class="btn btn-outline" onclick="showPage('home-page')">
+                            <i class="fas fa-arrow-right"></i>
+                            العودة للرئيسية
+                        </button>
+                    </div>
+                </div>
+
+                <div class="map-controls">
+                    <div class="control-group">
+                        <h3>التحكم في الخريطة</h3>
+                        <button class="control-btn" onclick="zoomIn()">
+                            <i class="fas fa-search-plus"></i>
+                            تكبير
+                        </button>
+                        <button class="control-btn" onclick="zoomOut()">
+                            <i class="fas fa-search-minus"></i>
+                            تصغير
+                        </button>
+                        <button class="control-btn" onclick="resetView()">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                            إعادة تعيين
+                        </button>
+                    </div>
+                    <div class="control-group">
+                        <h3>البحث في الخريطة</h3>
+                        <input type="text" id="search" placeholder="ابحث في المواضيع الرياضية...">
+                    </div>
+                    <div class="control-group">
+                        <h3>الفروع الرئيسية</h3>
+                        <div>
+                            <span class="math-badge" style="background: rgba(37, 99, 235, 0.2); color: #2563EB;">الجبر</span>
+                            <span class="math-badge" style="background: rgba(16, 185, 129, 0.2); color: #10B981;">الهندسة</span>
+                            <span class="math-badge" style="background: rgba(251, 146, 60, 0.2); color: #FB923C;">التفاضل</span>
+                            <span class="math-badge" style="background: rgba(124, 58, 237, 0.2); color: #7C3AED;">الإحصاء</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <svg id="math-map"></svg>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>MathMap &copy; 2024 - مشروع الطالب: باسل خالد إبراهيم المريشد | المعلم: محمد حامد | مدرسة المطورون</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- صفحة التفاصيل -->
+    <div id="topic-page" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-project-diagram"></i>
+                        MathMap
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" onclick="showPage('home-page')">الرئيسية</a></li>
+                            <li><a href="#" onclick="showPage('map-page')">الخريطة</a></li>
+                            <li><a href="#" onclick="showPage('about-page')">عن المشروع</a></li>
+                            <li><a href="#" onclick="showPage('learn-page')">كيف أتعلم</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="topic-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="#" onclick="showPage('home-page')"><i class="fas fa-home"></i></a> / 
+                    <a href="#" onclick="showPage('map-page')">الخريطة</a> / 
+                    <span id="topic-title">الجبر</span>
+                </div>
+                <h1 id="detail-title">الجبر</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="content-section">
+                <h2><i class="fas fa-info-circle"></i> التعريف والمفهوم</h2>
+                <p id="topic-description">الجبر هو فرع من فروع الرياضيات يدرس الرموز الرياضية والقواعد المتعلقة بتلاعب هذه الرموز، وهو يعمم الحساب بالسماح باستخدام المتغيرات إلى جانب الأعداد. يعتبر الجبر أحد الركائز الأساسية للرياضيات الحديثة.</p>
+                
+                <div class="concept-list">
+                    <div class="concept-item">
+                        <h4>المتغيرات</h4>
+                        <p>رموز تمثل قيماً مجهولة</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>المعادلات</h4>
+                        <p>علاقات رياضية بين تعبيرات</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>الدوال</h4>
+                        <p>علاقات بين مجموعتين من العناصر</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>المتباينات</h4>
+                        <p>علاقات عدم المساواة بين القيم</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-calculator"></i> القوانين والصيغ الأساسية</h2>
+                <div class="math-formula">
+                    (a + b)² = a² + 2ab + b²
+                </div>
+                <div class="math-formula">
+                    a² - b² = (a - b)(a + b)
+                </div>
+                <div class="math-formula">
+                    المعادلة التربيعية: ax² + bx + c = 0
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-lightbulb"></i> أمثلة وتطبيقات</h2>
+                <div class="example-box">
+                    <h3>مثال 1: حل معادلة خطية</h3>
+                    <p>حل المعادلة: 2x + 5 = 13</p>
+                    <div class="math-formula">
+                        2x = 13 - 5 → 2x = 8 → x = 4
+                    </div>
+                </div>
+                <div class="example-box">
+                    <h3>مثال 2: تبسيط عبارة جبرية</h3>
+                    <p>بسّط: 3(x + 2) + 2(x - 1)</p>
+                    <div class="math-formula">
+                        3x + 6 + 2x - 2 = 5x + 4
+                    </div>
+                </div>
+                <div class="example-box">
+                    <h3>مثال 3: حل نظام معادلات</h3>
+                    <p>حل النظام: 2x + y = 8, x - y = 1</p>
+                    <div class="math-formula">
+                        بجمع المعادلتين: 3x = 9 → x = 3<br>
+                        ثم: 3 - y = 1 → y = 2
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="showPage('map-page')" style="margin-bottom: 2rem;">
+                <i class="fas fa-arrow-right"></i>
+                العودة إلى الخريطة
+            </button>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>MathMap &copy; 2024 - مشروع الطالب: باسل خالد إبراهيم المريشد | المعلم: محمد حامد | مدرسة المطورون</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- صفحة عن المشروع -->
+    <div id="about-page" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-project-diagram"></i>
+                        MathMap
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" onclick="showPage('home-page')">الرئيسية</a></li>
+                            <li><a href="#" onclick="showPage('map-page')">الخريطة</a></li>
+                            <li><a href="#" class="active" onclick="showPage('about-page')">عن المشروع</a></li>
+                            <li><a href="#" onclick="showPage('learn-page')">كيف أتعلم</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="container" style="padding: 4rem 0;">
+            <h1 class="section-title">عن مشروع MathMap</h1>
+            
+            <div class="content-section">
+                <h2><i class="fas fa-bullseye"></i> الهدف من المشروع</h2>
+                <p>يهدف MathMap إلى تبسيط تعلم الرياضيات من خلال تقديم خريطة تفاعلية تربط بين مختلف فروع ومفاهيم الرياضيات بطريقة مرئية وسهلة الفهم. نحن نؤمن بأن التمثيل المرئي للعلاقات بين المفاهيم الرياضية يساعد في بناء فهم أعمق وأكثر استدامة.</p>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-users"></i> فريق العمل</h2>
+                <div class="concept-list">
+                    <div class="concept-item">
+                        <h4>الطالب</h4>
+                        <p>باسل خالد إبراهيم المريشد</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>المعلم</h4>
+                        <p>محمد حامد</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>المدرسة</h4>
+                        <p>المطورون</p>
+                    </div>
+                    <div class="concept-item">
+                        <h4>المادة</h4>
+                        <p>الرياضيات</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-cogs"></i> التقنيات المستخدمة</h2>
+                <p>• HTML5, CSS3, JavaScript - لبناء الواجهة التفاعلية</p>
+                <p>• SVG - لرسم الخرائط والعلاقات البيانية</p>
+                <p>• Font Awesome - للأيقونات والرموز</p>
+                <p>• Google Fonts - للخطوط العربية</p>
+                <p>• تصميم متجاوب - يعمل على جميع الأجهزة</p>
+            </div>
+
+            <button class="btn" onclick="showPage('home-page')">
+                <i class="fas fa-arrow-right"></i>
+                العودة إلى الرئيسية
+            </button>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>MathMap &copy; 2024 - مشروع الطالب: باسل خالد إبراهيم المريشد | المعلم: محمد حامد | مدرسة المطورون</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- صفحة كيف أتعلم -->
+    <div id="learn-page" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-project-diagram"></i>
+                        MathMap
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#" onclick="showPage('home-page')">الرئيسية</a></li>
+                            <li><a href="#" onclick="showPage('map-page')">الخريطة</a></li>
+                            <li><a href="#" onclick="showPage('about-page')">عن المشروع</a></li>
+                            <li><a href="#" class="active" onclick="showPage('learn-page')">كيف أتعلم</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="container" style="padding: 4rem 0;">
+            <h1 class="section-title">كيف تتعلم الرياضيات بشكل فعال</h1>
+            
+            <div class="content-section">
+                <h2><i class="fas fa-graduation-cap"></i> نصائح للتعلم الفعال</h2>
+                <div class="example-box">
+                    <h3>١. ابدأ بالأساسيات</h3>
+                    <p>تأكد من فهمك الجيد للمفاهيم الأساسية قبل الانتقال إلى المواضيع المتقدمة. الرياضيات مبنية على تراكم المعرفة.</p>
+                </div>
+                <div class="example-box">
+                    <h3>٢. تدرب بانتظام</h3>
+                    <p>حل المسائل الرياضية بشكل يومي لتعزيز فهمك. الممارسة المنتظمة هي مفتاح إتقان الرياضيات.</p>
+                </div>
+                <div class="example-box">
+                    <h3>٣. استخدم الخريطة التفاعلية</h3>
+                    <p>استكشف الروابط بين المواضيع المختلفة لفهم الصورة الكاملة. هذا يساعد في ربط المفاهيم ببعضها البعض.</p>
+                </div>
+                <div class="example-box">
+                    <h3>٤. اطلب المساعدة</h3>
+                    <p>لا تتردد في سؤال معلمك أو زملائك عندما تواجه صعوبة. التعلم التعاوني يساعد في تجاوز العقبات.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-road"></i> خطوات التعلم باستخدام MathMap</h2>
+                <div class="math-formula">
+                    ١. استعرض الخريطة التفاعلية للتعرف على هيكل الرياضيات
+                </div>
+                <div class="math-formula">
+                    ٢. اختر الموضوع الذي تريد تعلمه من العقد المختلفة
+                </div>
+                <div class="math-formula">
+                    ٣. اقرأ الشرح المبسط والأمثلة العملية
+                </div>
+                <div class="math-formula">
+                    ٤. انتقل إلى المواضيع المرتبطة لتعميق فهمك
+                </div>
+                <div class="math-formula">
+                    ٥. كرر العملية مع مواضيع جديدة وابنِ معرفتك تدريجياً
+                </div>
+            </div>
+
+            <button class="btn" onclick="showPage('map-page')">
+                <i class="fas fa-play"></i>
+                ابدأ التعلم الآن
+            </button>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>MathMap &copy; 2024 - مشروع الطالب: باسل خالد إبراهيم المريشد | المعلم: محمد حامد | مدرسة المطورون</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div id="node-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">الجبر</h2>
+                <p id="modal-category" class="modal-category">فرع الرياضيات</p>
+            </div>
+            <div class="modal-body">
+                <p id="modal-description" class="modal-description">الجبر هو فرع من فروع الرياضيات يدرس الرموز الرياضية والقواعد المتعلقة بتلاعب هذه الرموز، وهو يعمم الحساب بالسماح باستخدام المتغيرات إلى جانب الأعداد.</p>
+                <div class="modal-example">
+                    <h4>مثال تطبيقي</h4>
+                    <p id="modal-example">حل المعادلة: 2x + 3 = 7 → x = 2</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="openTopic()">
+                    <i class="fas fa-book"></i>
+                    اقرأ أكثر
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات العقد المحسنة
+        const nodes = [
+            { 
+                id: 'algebra', 
+                name: 'الجبر', 
+                x: 400, y: 300, 
+                color: 'algebra', 
+                description: 'فرع الرياضيات الذي يدرس الرموز والقواعد المتعلقة بتلاعب هذه الرموز. يعتبر الجبر أحد الركائز الأساسية للرياضيات الحديثة ويشمل دراسة المعادلات، المتغيرات، والدوال.',
+                example: 'حل المعادلة: 2x + 3 = 7 → 2x = 4 → x = 2',
+                category: 'فرع الرياضيات'
+            },
+            { 
+                id: 'geometry', 
+                name: 'الهندسة', 
+                x: 200, y: 200, 
+                color: 'geometry', 
+                description: 'فرع الرياضيات الذي يدرس الأشكال والفضاء والخصائص المكانية. تشمل الهندسة دراسة النقاط، الخطوط، المستويات، والزوايا.',
+                example: 'مساحة المثلث: (1/2) × القاعدة × الارتفاع',
+                category: 'فرع الرياضيات'
+            },
+            { 
+                id: 'calculus', 
+                name: 'التفاضل والتكامل', 
+                x: 600, y: 200, 
+                color: 'calculus', 
+                description: 'فرع الرياضيات الذي يدرس التغير والتراكم. يشمل التفاضل دراسة المعدلات والتغير، بينما يتناول التكامل دراسة التراكم والمساحات.',
+                example: 'مشتقة x² هي 2x',
+                category: 'فرع الرياضيات'
+            },
+            { 
+                id: 'statistics', 
+                name: 'الإحصاء', 
+                x: 400, y: 100, 
+                color: 'statistics', 
+                description: 'فرع الرياضيات الذي يدرس جمع وتحليل وتفسير البيانات. يستخدم الإحصاء في استخلاص الاستنتاجات واتخاذ القرارات بناءً على البيانات.',
+                example: 'المتوسط الحسابي: مجموع القيم ÷ عددها',
+                category: 'فرع الرياضيات'
+            },
+            { 
+                id: 'arithmetic', 
+                name: 'الحساب', 
+                x: 200, y: 400, 
+                color: 'arithmetic', 
+                description: 'أقدم فروع الرياضيات، يدرس الأعداد والعمليات الأساسية مثل الجمع، الطرح، الضرب، والقسمة.',
+                example: 'الجمع: 5 + 3 = 8',
+                category: 'فرع الرياضيات'
+            },
+            { 
+                id: 'trigonometry', 
+                name: 'المثلثات', 
+                x: 600, y: 400, 
+                color: 'trigonometry', 
+                description: 'فرع الرياضيات الذي يدرس العلاقات بين زوايا وأضلاع المثلثات. يشمل دراسة الدوال المثلثية مثل الجيب، جيب التمام، والظل.',
+                example: 'جيب الزاوية = المقابل ÷ الوتر',
+                category: 'فرع الرياضيات'
+            }
+        ];
+
+        const links = [
+            { source: 'algebra', target: 'geometry' },
+            { source: 'algebra', target: 'calculus' },
+            { source: 'algebra', target: 'statistics' },
+            { source: 'algebra', target: 'arithmetic' },
+            { source: 'geometry', target: 'trigonometry' },
+            { source: 'arithmetic', target: 'algebra' },
+            { source: 'calculus', target: 'algebra' }
+        ];
+
+        let scale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let startX, startY, startTranslateX, startTranslateY;
+
+        function initMap() {
+            const svg = document.getElementById('math-map');
+            svg.innerHTML = '';
+
+            // Set initial viewport
+            svg.setAttribute('viewBox', `0 0 800 600`);
+
+            // رسم الروابط
+            links.forEach(link => {
+                const source = nodes.find(n => n.id === link.source);
+                const target = nodes.find(n => n.id === link.target);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', source.x);
+                line.setAttribute('y1', source.y);
+                line.setAttribute('x2', target.x);
+                line.setAttribute('y2', target.y);
+                line.setAttribute('class', 'link');
+                svg.appendChild(line);
+            });
+
+            // رسم العقد
+            nodes.forEach(node => {
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+                group.classList.add('node', `node-${node.color}`);
+                group.setAttribute('data-node', node.id);
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('r', '35');
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dy', '5');
+                text.textContent = node.name;
+                
+                group.appendChild(circle);
+                group.appendChild(text);
+                group.addEventListener('click', () => openNodeModal(node));
+                
+                svg.appendChild(group);
+            });
+
+            // إضافة إمكانية السحب
+            svg.addEventListener('mousedown', startDrag);
+            svg.addEventListener('mousemove', drag);
+            svg.addEventListener('mouseup', endDrag);
+            svg.addEventListener('mouseleave', endDrag);
+
+            // إضافة إمكانية التكبير بالعجلة
+            svg.addEventListener('wheel', handleZoom);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startTranslateX = translateX;
+            startTranslateY = translateY;
+            document.getElementById('math-map').style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            
+            translateX = startTranslateX + dx;
+            translateY = startTranslateY + dy;
+            
+            updateView();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            document.getElementById('math-map').style.cursor = 'grab';
+        }
+
+        function handleZoom(e) {
+            e.preventDefault();
+            const zoomIntensity = 0.1;
+            const wheel = e.deltaY < 0 ? 1 : -1;
+            const zoom = Math.exp(wheel * zoomIntensity);
+            
+            scale *= zoom;
+            updateView();
+        }
+
+        function updateView() {
+            const svg = document.getElementById('math-map');
+            const groups = svg.querySelectorAll('.node');
+            
+            groups.forEach(group => {
+                const originalX = parseFloat(group.getAttribute('data-x') || group.getAttribute('transform').split('(')[1].split(',')[0]);
+                const originalY = parseFloat(group.getAttribute('data-y') || group.getAttribute('transform').split(',')[1].split(')')[0]);
+                
+                group.setAttribute('transform', `translate(${originalX}, ${originalY}) scale(${scale})`);
+            });
+        }
+
+        function openNodeModal(node) {
+            document.getElementById('modal-title').textContent = node.name;
+            document.getElementById('modal-category').textContent = node.category;
+            document.getElementById('modal-description').textContent = node.description;
+            document.getElementById('modal-example').textContent = node.example;
+            document.getElementById('node-modal').style.display = 'block';
+            
+            // حفظ العقدة المحددة
+            sessionStorage.setItem('selectedNode', JSON.stringify(node));
+        }
+
+        function closeModal() {
+            document.getElementById('node-modal').style.display = 'none';
+        }
+
+        function openTopic() {
+            const node = JSON.parse(sessionStorage.getItem('selectedNode'));
+            if (node) {
+                document.getElementById('topic-title').textContent = node.name;
+                document.getElementById('detail-title').textContent = node.name;
+                document.getElementById('topic-description').textContent = node.description;
+            }
+            closeModal();
+            showPage('topic-page');
+        }
+
+        function showPage(pageId) {
+            // إخفاء جميع الصفحات
+            document.querySelectorAll('div[id$="-page"]').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // إظهار الصفحة المطلوبة
+            document.getElementById(pageId).style.display = 'block';
+            
+            // تحديث حالة التنقل
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`nav a[onclick="showPage('${pageId}')"]`).classList.add('active');
+            
+            // إذا كانت صفحة الخريطة، نقوم بتهيئتها
+            if (pageId === 'map-page') {
+                setTimeout(initMap, 100);
+            }
+        }
+
+        // وظائف التحكم في الخريطة
+        function zoomIn() {
+            scale *= 1.2;
+            updateView();
+        }
+
+        function zoomOut() {
+            scale /= 1.2;
+            updateView();
+        }
+
+        function resetView() {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateView();
+        }
+
+        // البحث
+        document.getElementById('search')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const svg = document.getElementById('math-map');
+            const allNodes = svg.querySelectorAll('.node');
+            
+            allNodes.forEach(nodeElement => {
+                const nodeId = nodeElement.getAttribute('data-node');
+                const node = nodes.find(n => n.id === nodeId);
+                
+                if (node && node.name.toLowerCase().includes(searchTerm)) {
+                    nodeElement.style.opacity = '1';
+                    nodeElement.classList.add('pulse');
+                } else {
+                    nodeElement.style.opacity = '0.3';
+                    nodeElement.classList.remove('pulse');
+                }
+            });
+        });
+
+        // تهيئة أولية
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            
+            // إغلاق المودال عند النقر خارجها
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('node-modal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
